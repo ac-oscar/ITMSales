@@ -39,9 +39,9 @@
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {
-        var formWasModified = editContext.IsModified();
+        var formWasMofied = editContext.IsModified();
 
-        if (!formWasModified || FormPostedSuccessfully)
+        if (!formWasMofied || FormPostedSuccessfully)
         {
             return;
         }
@@ -50,7 +50,7 @@
         {
             Title = "Confirmación",
             Text = "¿Deseas abandonar la página y perder los cambios?",
-            Icon = SweetAlertIcon.Warning,
+            Icon = SweetAlertIcon.Question,
             ShowCancelButton = true,
             CancelButtonText = "No",
             ConfirmButtonText = "Si"

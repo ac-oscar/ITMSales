@@ -13,10 +13,7 @@ namespace ITMSales.WEB.Repositories
             PropertyNameCaseInsensitive = true
         };
 
-        public Repository(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public Repository(HttpClient httpClient) => _httpClient = httpClient;
 
         public async Task<HttpResponseWrapper<T>> Get<T>(string url)
         {

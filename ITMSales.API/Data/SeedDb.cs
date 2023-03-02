@@ -93,6 +93,7 @@ namespace ITMSales.API.Data
                 _context.Categories.Add(new Category { Name = "Calzado" });
                 _context.Categories.Add(new Category { Name = "Ropa" });
                 _context.Categories.Add(new Category { Name = "Accesorios" });
+                _context.Categories.Add(new Category { Name = "Electrodomesticos" });
 
                 await _context.SaveChangesAsync();
             }

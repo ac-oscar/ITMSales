@@ -13,7 +13,7 @@
 @code {
     [Parameter] public int CurrentPage { get; set; } = 1;
     [Parameter] public int TotalPages { get; set; }
-    [Parameter] public int Radio { get; set; } = 10;
+    [Parameter] public int TableLength { get; set; } = 10;
     [Parameter] public EventCallback<int> SelectedPage { get; set; }
     List<PageModel> Links = new();
 
@@ -33,7 +33,7 @@
 
         for (int i = 1; i <= TotalPages; i++)
         {
-            if((i <= Radio && CurrentPage <= (Radio / 2)) || (i > (TotalPages - Radio) && CurrentPage + (Radio / 2) > TotalPages ))
+            if (i <= TableLength && CurrentPage <= TableLength)
             {
                 Links.Add(new PageModel
                 {
@@ -42,7 +42,7 @@
                     Text = $"{i}"
                 });
             }
-            else if(i > CurrentPage - (Radio/2) && i <= CurrentPage + (Radio / 2))
+            else if (CurrentPage < (i + TableLength) && (CurrentPage + TableLength) >= (i + TableLength))
             {
                 Links.Add(new PageModel
                 {

@@ -25,10 +25,14 @@
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Tools" />
     <None Remove="Controllers\" />
+    <None Remove="Helpers\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ITMSales.Shared\ITMSales.Shared.csproj">

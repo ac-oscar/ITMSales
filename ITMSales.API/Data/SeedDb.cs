@@ -1,14 +1,19 @@
-﻿using ITMSales.Shared.Entities;
+﻿using ITMSales.API.Services;
+using ITMSales.Shared.Entities;
+using ITMSales.Shared.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITMSales.API.Data
 {
-	public class SeedDb
-	{
+    public class SeedDb
+    {
         private readonly DataContext _context;
+        private readonly IApiService _apiService;
 
-        public SeedDb(DataContext context)
+        public SeedDb(DataContext context, IApiService apiService)
         {
             _context = context;
+            _apiService = apiService;
         }
 
         public async Task SeedAsync()
@@ -22,67 +27,72 @@ namespace ITMSales.API.Data
         {
             if (!_context.Countries.Any())
             {
-                _context.Countries.Add(new Country
-                {
-                    Name = "Colombia",
-                    States = new List<State>()
-                    {
-                        new State()
-                        {
-                            Name = "Antioquia",
-                            Cities = new List<City>() {
-                                new City() { Name = "Medellín" },
-                                new City() { Name = "Itagüí" },
-                                new City() { Name = "Envigado" },
-                                new City() { Name = "Bello" },
-                                new City() { Name = "Rionegro" },
-                            }
-                        },
-                        new State()
-                        {
-                            Name = "Bogotá",
-                            Cities = new List<City>() {
-                                new City() { Name = "Usaquen" },
-                                new City() { Name = "Champinero" },
-                                new City() { Name = "Santa fe" },
-                                new City() { Name = "Useme" },
-                                new City() { Name = "Bosa" },
-                            }
-                        },
-                    }
-                });
+                Response responseCountries = await _apiService.GetListAsync<CountryResponse>("/v1", "/countries");
 
-                _context.Countries.Add(new Country
+                if (responseCountries.IsSuccess)
                 {
-                    Name = "Estados Unidos",
-                    States = new List<State>()
-                    {
-                        new State()
-                        {
-                            Name = "Florida",
-                            Cities = new List<City>() {
-                                new City() { Name = "Orlando" },
-                                new City() { Name = "Miami" },
-                                new City() { Name = "Tampa" },
-                                new City() { Name = "Fort Lauderdale" },
-                                new City() { Name = "Key West" },
-                            }
-                        },
-                        new State()
-                        {
-                            Name = "Texas",
-                            Cities = new List<City>() {
-                                new City() { Name = "Houston" },
-                                new City() { Name = "San Antonio" },
-                                new City() { Name = "Dallas" },
-                                new City() { Name = "Austin" },
-                                new City() { Name = "El Paso" },
-                            }
-                        },
-                    }
-                });
+                    List<CountryResponse> countries = (List<CountryResponse>)responseCountries.Result!;
 
-                await _context.SaveChangesAsync();
+                    foreach (CountryResponse countryResponse in countries)
+                    {
+                        Country country = await _context.Countries!.FirstOrDefaultAsync(c => c.Name == countryResponse.Name!)!;
+
+                        if (country == null)
+                        {
+                            country = new() { Name = countryResponse.Name!, States = new List<State>() };
+
+                            Response responseStates = await _apiService.GetListAsync<StateResponse>("/v1", $"/countries/{countryResponse.Iso2}/states");
+
+                            if (responseStates.IsSuccess)
+                            {
+                                List<StateResponse> states = (List<StateResponse>)responseStates.Result!;
+
+                                foreach (StateResponse stateResponse in states!)
+                                {
+                                    State state = country.States!.FirstOrDefault(s => s.Name == stateResponse.Name!)!;
+
+                                    if (state == null)
+                                    {
+                                        state = new() { Name = stateResponse.Name!, Cities = new List<City>() };
+
+                                        Response responseCities = await _apiService.GetListAsync<CityResponse>("/v1", $"/countries/{countryResponse.Iso2}/states/{stateResponse.Iso2}/cities");
+
+                                        if (responseCities.IsSuccess)
+                                        {
+                                            List<CityResponse> cities = (List<CityResponse>)responseCities.Result!;
+
+                                            foreach (CityResponse cityResponse in cities)
+                                            {
+                                                if (cityResponse.Name == "Mosfellsbær" || cityResponse.Name == "Șăulița")
+                                                {
+                                                    continue;
+                                                }
+
+                                                City city = state.Cities!.FirstOrDefault(c => c.Name == cityResponse.Name!)!;
+
+                                                if (city == null)
+                                                {
+                                                    state.Cities.Add(new City() { Name = cityResponse.Name! });
+                                                }
+                                            }
+                                        }
+
+                                        if (state.CitiesNumber > 0)
+                                        {
+                                            country.States.Add(state);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (country.StatesNumber > 0)
+                            {
+                                _context.Countries.Add(country);
+                                await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -90,16 +100,66 @@ namespace ITMSales.API.Data
         {
             if (!_context.Categories.Any())
             {
-                _context.Categories.Add(new Category { Name = "Calzado" });
-                _context.Categories.Add(new Category { Name = "Ropa" });
+                _context.Categories.Add(new Category { Name = "Abrigos" });
                 _context.Categories.Add(new Category { Name = "Accesorios" });
-                _context.Categories.Add(new Category { Name = "Electrodomesticos" });
+                _context.Categories.Add(new Category { Name = "Alimentos" });
+                _context.Categories.Add(new Category { Name = "Anteojos" });
+                _context.Categories.Add(new Category { Name = "Armas" });
+                _context.Categories.Add(new Category { Name = "Articulos de Baño" });
+                _context.Categories.Add(new Category { Name = "Belleza" });
+                _context.Categories.Add(new Category { Name = "Bicicletas" });
+                _context.Categories.Add(new Category { Name = "Bisuteria" });
+                _context.Categories.Add(new Category { Name = "Bolsos" });
+                _context.Categories.Add(new Category { Name = "Calzado" });
+                _context.Categories.Add(new Category { Name = "Cámaras" });
+                _context.Categories.Add(new Category { Name = "Camas" });
                 _context.Categories.Add(new Category { Name = "Celulares" });
-                _context.Categories.Add(new Category { Name = "Computadores" });
+                _context.Categories.Add(new Category { Name = "Cerámica" });
                 _context.Categories.Add(new Category { Name = "Cocina" });
-                _context.Categories.Add(new Category { Name = "Jugueteria" });
                 _context.Categories.Add(new Category { Name = "Colchones" });
+                _context.Categories.Add(new Category { Name = "Comedores" });
+                _context.Categories.Add(new Category { Name = "Computadores" });
+                _context.Categories.Add(new Category { Name = "Confitería" });
+                _context.Categories.Add(new Category { Name = "Cortinas" });
+                _context.Categories.Add(new Category { Name = "Cosmeticos" });
+                _context.Categories.Add(new Category { Name = "Cuadros" });
+                _context.Categories.Add(new Category { Name = "Cubiertos" });
+                _context.Categories.Add(new Category { Name = "Electrodomesticos" });
+                _context.Categories.Add(new Category { Name = "Erotismo" });
+                _context.Categories.Add(new Category { Name = "Escritorios" });
+                _context.Categories.Add(new Category { Name = "Espejos" });
+                _context.Categories.Add(new Category { Name = "Ferretería" });
+                _context.Categories.Add(new Category { Name = "Jugueteria" });
+                _context.Categories.Add(new Category { Name = "Lavadoras" });
+                _context.Categories.Add(new Category { Name = "Libros" });
+                _context.Categories.Add(new Category { Name = "Luces Led" });
+                _context.Categories.Add(new Category { Name = "Manteles" });
+                _context.Categories.Add(new Category { Name = "Mascotas" });
+                _context.Categories.Add(new Category { Name = "Materas" });
+                _context.Categories.Add(new Category { Name = "Medicamentos" });
+                _context.Categories.Add(new Category { Name = "Muebles" });
+                _context.Categories.Add(new Category { Name = "Neveras" });
+                _context.Categories.Add(new Category { Name = "Ollas" });
+                _context.Categories.Add(new Category { Name = "Patines" });
+                _context.Categories.Add(new Category { Name = "Peluches" });
+                _context.Categories.Add(new Category { Name = "Perfumes" });
+                _context.Categories.Add(new Category { Name = "Pintura" });
+                _context.Categories.Add(new Category { Name = "Planchas y Secadores" });
+                _context.Categories.Add(new Category { Name = "Plantas" });
+                _context.Categories.Add(new Category { Name = "Puertas" });
+                _context.Categories.Add(new Category { Name = "Relojes" });
+                _context.Categories.Add(new Category { Name = "Ropa" });
+                _context.Categories.Add(new Category { Name = "Ropa Deportiva" });
+                _context.Categories.Add(new Category { Name = "Ropa Infantil" });
+                _context.Categories.Add(new Category { Name = "Ropa Interior" });
+                _context.Categories.Add(new Category { Name = "Sillas" });
+                _context.Categories.Add(new Category { Name = "Tecnología" });
                 _context.Categories.Add(new Category { Name = "Televisores" });
+                _context.Categories.Add(new Category { Name = "Tendidos" });
+                _context.Categories.Add(new Category { Name = "Toallas" });
+                _context.Categories.Add(new Category { Name = "Vajillas" });
+                _context.Categories.Add(new Category { Name = "Vestidos de Baño" });
+                _context.Categories.Add(new Category { Name = "Videojuegos" });
 
                 await _context.SaveChangesAsync();
             }

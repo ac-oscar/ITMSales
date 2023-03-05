@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using ITMSales.API.Data;
 using ITMSales.Shared.Entities;
+using ITMSales.Shared.DTOs;
+using ITMSales.API.Helpers;
 
 namespace ITMSales.API.Controllers
 {
@@ -16,11 +18,46 @@ namespace ITMSales.API.Controllers
             _context = context;
         }
 
+        #region Pagination
+
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<ActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(await _context.Cities.ToListAsync());
+            var queryable = _context.Cities
+                .Where(x => x.State!.Id == pagination.Id)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return Ok(await queryable
+                .OrderBy(x => x.Name)
+                .Paginate(pagination)
+                .ToListAsync());
         }
+
+        [HttpGet("totalPages")]
+        public async Task<ActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var queryable = _context.Cities
+                .Where(x => x.State!.Id == pagination.Id)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+
+            double totalPages = Math.Ceiling(count / pagination.RecordsNumber);
+
+            return Ok(totalPages);
+        }
+
+        #endregion
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)

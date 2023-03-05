@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ITMSales.API.Data;
 using ITMSales.Shared.Entities;
+using ITMSales.API.Helpers;
+using ITMSales.Shared.DTOs;
 
 namespace ITMSales.API.Controllers
 {
@@ -17,20 +19,51 @@ namespace ITMSales.API.Controllers
             _context = context;
         }
 
+        #region Pagination
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var queryable = _context.Countries
+                .Include(x => x.States)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return Ok(await queryable
+                .OrderBy(x => x.Name)
+                .Paginate(pagination)
+                .ToListAsync());
+        }
+
+        [HttpGet("totalPages")]
+        public async Task<ActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var queryable = _context.Countries.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+
+            double totalPages = Math.Ceiling(count / pagination.RecordsNumber);
+
+            return Ok(totalPages);
+        }
+
+        #endregion
+
         [HttpGet("full")]
         public async Task<IActionResult> GetFullAsync()
         {
             return Ok(await _context.Countries
                 .Include(x => x.States!)
                 .ThenInclude(x => x.Cities)
-                .ToListAsync());
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAsync()
-        {
-            return Ok(await _context.Countries
-                .Include(x => x.States)
                 .ToListAsync());
         }
 

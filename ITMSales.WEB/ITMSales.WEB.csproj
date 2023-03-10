@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
     <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +26,7 @@
     <None Remove="Pages\Categories\" />
     <None Remove="Pages\Cities\" />
     <None Remove="Pages\States\" />
+    <None Remove="Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
@@ -32,6 +34,7 @@
     <Folder Include="Pages\Categories\" />
     <Folder Include="Pages\Cities\" />
     <Folder Include="Pages\States\" />
+    <Folder Include="Auth\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ITMSales.Shared\ITMSales.Shared.csproj">

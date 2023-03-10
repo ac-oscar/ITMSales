@@ -10,13 +10,16 @@
     <None Remove="Entities\" />
     <None Remove="DTOs\" />
     <None Remove="Responses\" />
+    <None Remove="Enums\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\" />
     <Folder Include="DTOs\" />
     <Folder Include="Responses\" />
+    <Folder Include="Enums\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.2" />
   </ItemGroup>
 </Project>

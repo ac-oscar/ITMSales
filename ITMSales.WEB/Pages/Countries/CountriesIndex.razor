@@ -2,6 +2,7 @@
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Países</h3>
 
@@ -20,11 +21,9 @@
     </div>
 </div>
 
-<Pagination
-    CurrentPage="currentPage"
-    TotalPages="totalPages"
-    SelectedPage="SelectedPageAsync"
-/>
+<Pagination CurrentPage="currentPage"
+            TotalPages="totalPages"
+            SelectedPage="SelectedPageAsync" />
 
 <GenericList MyList="Countries">
     <Body>

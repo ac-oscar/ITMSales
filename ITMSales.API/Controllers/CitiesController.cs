@@ -4,10 +4,13 @@ using ITMSales.API.Data;
 using ITMSales.Shared.Entities;
 using ITMSales.Shared.DTOs;
 using ITMSales.API.Helpers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ITMSales.API.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("/api/cities")]
     public class CitiesController : ControllerBase
 	{

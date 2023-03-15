@@ -4,10 +4,13 @@ using ITMSales.API.Data;
 using ITMSales.Shared.Entities;
 using ITMSales.API.Helpers;
 using ITMSales.Shared.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ITMSales.API.Controllers
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("/api/states")]
     public class StatesController : ControllerBase
 	{

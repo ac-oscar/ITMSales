@@ -17,10 +17,10 @@ namespace ITMSales.WEB.Auth
 
         public AuthenticationProviderJWT(IJSRuntime jSRuntime, HttpClient httpClient)
         {
-            _jSRuntime = jSRuntime;
+            _jSRuntime  = jSRuntime;
             _httpClient = httpClient;
-            _tokenKey = "TOKEN_KEY";
-            _anonimous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            _tokenKey   = "TOKEN_KEY";
+            _anonimous  = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()

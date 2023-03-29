@@ -61,6 +61,13 @@ namespace ITMSales.API.Controllers
 
         #endregion
 
+        [AllowAnonymous]
+        [HttpGet("combo")]
+        public async Task<ActionResult> GetComboAsync()
+        {
+            return Ok(await _context.Countries.ToListAsync());
+        }
+
         [HttpGet("full")]
         public async Task<IActionResult> GetFullAsync()
         {

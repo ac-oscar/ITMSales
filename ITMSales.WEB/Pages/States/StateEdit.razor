@@ -19,6 +19,9 @@ else
     private State? state;
     private StateForm? stateForm;
 
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
     [Parameter]
     public int StateId { get; set; }
 
@@ -55,6 +58,7 @@ else
             return;
         }
 
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
         Return();
     }
 

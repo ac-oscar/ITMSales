@@ -15,7 +15,7 @@ else
 
     <div class="mb-5" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between">
         <div>
-            <a class="btn btn-primary" href="/countries/create">Nuevo País</a>
+            <a class="btn btn-primary" @onclick=@(() => ShowModal())>Nuevo País</a>
         </div>
         <div style="display:flex; flex-direction:row;">
             <div class="mx-2">
@@ -54,7 +54,7 @@ else
                             </td>
                             <td>
                                 <a class="btn btn-info" href="/countries/details/@country.Id">Detalles</a>
-                                <a class="btn btn-warning" href="/countries/edit/@country.Id">Editar</a>
+                                <a class="btn btn-warning" @onclick=@(() => ShowModal(country.Id, true))>Editar</a>
                                 <button class="btn btn-danger" @onclick=@(() => DeleteAsync(country.Id))>Borrar</button>
                             </td>
                         </tr>
@@ -70,6 +70,9 @@ else
     public List<Country>? Countries { get; set; }
     private int currentPage = 1;
     private int totalPages;
+
+    [CascadingParameter]
+    IModalService Modal { get; set; } = default!;
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -172,5 +175,26 @@ else
         }
 
         await LoadAsync();
+    }
+
+    private async Task ShowModal(int id = 0, bool isEdit = false)
+    {
+        IModalReference modalReference;
+
+        if (isEdit)
+        {
+            modalReference = Modal.Show<CountryEdit>(string.Empty, new ModalParameters().Add("Id", id));
+        }
+        else
+        {
+            modalReference = Modal.Show<CountryCreate>();
+        }
+
+        var result = await modalReference.Result;
+
+        if (result.Confirmed)
+        {
+            await LoadAsync();
+        }
     }
 }

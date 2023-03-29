@@ -3,6 +3,7 @@
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 @attribute [Authorize(Roles = "Admin")]
+@using Pages.States
 
 @if (country is null)
 {
@@ -14,7 +15,7 @@ else
 
     <div class="mb-5" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
         <div>
-            <a class="btn btn-primary" href="/states/create/@country.Id">Nuevo Estado/Departamento</a>
+            <a class="btn btn-primary" @onclick=@(() => ShowModal(country.Id))>Nuevo Estado/Departamento</a>
             <a class="btn btn-success" href="/countries">Regresar</a>
         </div>
         <div style="display:flex; flex-direction:row;">
@@ -54,7 +55,7 @@ else
                             </td>
                             <td>
                                 <a class="btn btn-info" href="/states/details/@state.Id">Detalles</a>
-                                <a class="btn btn-warning" href="/states/edit/@state.Id">Editar</a>
+                                <a class="btn btn-warning" @onclick=@(() => ShowModal(state.Id, true))>Editar</a>
                                 <button class="btn btn-danger" @onclick=@(() => DeleteAsync(state.Id))>Borrar</button>
                             </td>
                         </tr>
@@ -70,6 +71,9 @@ else
     private List<State>? states;
     private int currentPage = 1;
     private int totalPages;
+
+    [CascadingParameter]
+    IModalService Modal { get; set; } = default!;
 
     [Parameter]
     public int Id { get; set; }
@@ -171,5 +175,26 @@ else
         }
 
         await LoadAsync();
+    }
+
+    private async Task ShowModal(int id = 0, bool isEdit = false)
+    {
+        IModalReference modalReference;
+
+        if (isEdit)
+        {
+            modalReference = Modal.Show<StateEdit>(string.Empty, new ModalParameters().Add("StateId", id));
+        }
+        else
+        {
+            modalReference = Modal.Show<StateCreate>(string.Empty, new ModalParameters().Add("CountryId", id));
+        }
+
+        var result = await modalReference.Result;
+
+        if (result.Confirmed)
+        {
+            await LoadAsync();
+        }
     }
 }

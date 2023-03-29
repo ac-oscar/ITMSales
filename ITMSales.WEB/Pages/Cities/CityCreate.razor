@@ -12,6 +12,9 @@
     private City city = new();
     private CityForm? cityForm;
 
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
     [Parameter]
     public int StateId { get; set; }
 
@@ -29,6 +32,7 @@
             return;
         }
 
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
         Return();
     }
 

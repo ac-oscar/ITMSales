@@ -47,13 +47,4 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Shared\InputImg.razor" />
-    <Content Remove="Pages\Auth\ResendConfirmationEmailToken.razor" />
-    <Content Remove="Pages\Auth\ChangePassword.razor" />
-    <Content Remove="Pages\Auth\EditUser.razor" />
-    <Content Remove="Pages\Auth\RecoverPassword.razor" />
-    <Content Remove="Pages\Auth\ConfirmEmail.razor" />
-    <Content Remove="Pages\Auth\ResetPassword.razor" />
-  </ItemGroup>
 </Project>

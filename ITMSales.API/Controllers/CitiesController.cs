@@ -62,6 +62,15 @@ namespace ITMSales.API.Controllers
 
         #endregion
 
+        [AllowAnonymous]
+        [HttpGet("combo/{stateId:int}")]
+        public async Task<ActionResult> GetCombAsync(int stateId)
+        {
+            return Ok(await _context.Cities
+                .Where(x => x.StateId == stateId)
+                .ToListAsync());
+        }
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)
         {

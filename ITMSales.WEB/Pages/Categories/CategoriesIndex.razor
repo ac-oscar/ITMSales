@@ -149,11 +149,14 @@
 
         if (responseHttp.Error)
         {
-            if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
             {
                 var message = await responseHttp.GetErrorMessageAsync();
                 await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-                return;
             }
         }
 

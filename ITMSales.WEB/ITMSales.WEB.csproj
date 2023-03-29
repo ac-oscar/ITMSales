@@ -13,11 +13,12 @@
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
     <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
+    <PackageReference Include="Blazored.Modal" Version="7.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,5 +46,14 @@
     <ProjectReference Include="..\ITMSales.Shared\ITMSales.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Shared\InputImg.razor" />
+    <Content Remove="Pages\Auth\ResendConfirmationEmailToken.razor" />
+    <Content Remove="Pages\Auth\ChangePassword.razor" />
+    <Content Remove="Pages\Auth\EditUser.razor" />
+    <Content Remove="Pages\Auth\RecoverPassword.razor" />
+    <Content Remove="Pages\Auth\ConfirmEmail.razor" />
+    <Content Remove="Pages\Auth\ResetPassword.razor" />
   </ItemGroup>
 </Project>

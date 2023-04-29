@@ -31,12 +31,18 @@
     <None Remove="Controllers\" />
     <None Remove="Helpers\" />
     <None Remove="Services\" />
+    <None Remove="Images\" />
+    <None Remove="Images\products\" />
+    <None Remove="Images\users\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Controllers\" />
     <Folder Include="Helpers\" />
     <Folder Include="Services\" />
+    <Folder Include="Images\" />
+    <Folder Include="Images\products\" />
+    <Folder Include="Images\users\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ITMSales.Shared\ITMSales.Shared.csproj">

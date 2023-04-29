@@ -15,10 +15,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
-    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.4.0" />
+    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.4" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.28.1" />
     <PackageReference Include="Blazored.Modal" Version="7.1.0" />
+    <PackageReference Include="MudBlazor" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,8 @@
     <None Remove="Auth\" />
     <None Remove="Helpers\" />
     <None Remove="Pages\Auth\" />
+    <None Remove="Pages\Orders\" />
+    <None Remove="Pages\Products\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
@@ -41,10 +44,16 @@
     <Folder Include="Auth\" />
     <Folder Include="Helpers\" />
     <Folder Include="Pages\Auth\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="Pages\Orders\" />
+    <Folder Include="Pages\Products\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ITMSales.Shared\ITMSales.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\images\" />
   </ItemGroup>
 </Project>

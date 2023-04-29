@@ -2,6 +2,7 @@
 using ITMSales.API.Data;
 using ITMSales.API.Helpers;
 using ITMSales.Shared.DTOs;
+using ITMSales.Shared.Entities;
 using ITMSales.Shared.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,81 @@ namespace ITMSales.API.Controllers
             }
 
             return BadRequest(response.Message);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> GetAsync(int id)
+        {
+            var sale = await _context.Sales
+                .Include(s => s.User!)
+                .ThenInclude(u => u.City!)
+                .ThenInclude(c => c.State!)
+                .ThenInclude(s => s.Country)
+                .Include(s => s.SaleDetails!)
+                .ThenInclude(sd => sd.Product)
+                .ThenInclude(p => p!.ProductImages)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (sale == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(sale);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Put(SaleDTO saleDTO)
+        {
+            var user = await _userHelper.GetUserAsync(User.Identity!.Name!);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var isAdmin = await _userHelper.IsUserInRoleAsync(user, UserType.Admin.ToString());
+
+            if (!isAdmin && saleDTO.OrderStatus != OrderStatus.Cancelled)
+            {
+                return BadRequest("Solo permitido para administradores.");
+            }
+
+            var sale = await _context.Sales
+                .Include(s => s.SaleDetails)
+                .FirstOrDefaultAsync(s => s.Id == saleDTO.Id);
+
+            if (sale == null)
+            {
+                return NotFound();
+            }
+
+            if (saleDTO.OrderStatus == OrderStatus.Cancelled)
+            {
+                await ReturnStockAsync(sale);
+            }
+
+            sale.OrderStatus = saleDTO.OrderStatus;
+
+            _context.Update(sale);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(sale);
+        }
+
+        private async Task ReturnStockAsync(Sale sale)
+        {
+            foreach (var saleDetail in sale.SaleDetails!)
+            {
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == saleDetail.ProductId);
+
+                if (product != null)
+                {
+                    product.Stock += saleDetail.Quantity;
+                }
+            }
+            await _context.SaveChangesAsync();
         }
 
         [HttpGet]

@@ -47,7 +47,7 @@ namespace ITMSales.API.Helpers
                 User = user,
                 Remarks = remarks,
                 SaleDetails = new List<SaleDetail>(),
-                OrderStatus = OrderStatus.Nuevo
+                OrderStatus = OrderStatus.New
             };
 
             foreach (var temporalSale in temporalSales)

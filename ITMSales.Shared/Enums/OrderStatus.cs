@@ -7,12 +7,7 @@ namespace ITMSales.Shared.Enums
         Dispatched,
         Shipped,
         Confirmed,
-        Cancelled,
-        Nuevo,
-        Despachado,
-        Enviado,
-        Confirmado,
-        Cancelado
+        Cancelled
     }
 }
 

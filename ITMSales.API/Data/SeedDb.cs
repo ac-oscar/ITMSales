@@ -1,4 +1,5 @@
-﻿using ITMSales.API.Helpers;
+﻿using System.Runtime.InteropServices;
+using ITMSales.API.Helpers;
 using ITMSales.API.Services;
 using ITMSales.Shared.Entities;
 using ITMSales.Shared.Enums;
@@ -57,7 +58,17 @@ namespace ITMSales.API.Data
                     city = await _context.Cities.FirstOrDefaultAsync();
                 }
 
-                var filePath = $"{Environment.CurrentDirectory}/Images/users/{image}";
+                string filePath;
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    filePath = $"{Environment.CurrentDirectory}\\Images\\users\\{image}";
+                }
+                else
+                {
+                    filePath = $"{Environment.CurrentDirectory}/Images/users/{image}";
+                }
+
                 var fileBytes = File.ReadAllBytes(filePath);
                 var imagePath = await _fileStorage.SaveFileAsync(fileBytes, "jpg", "users");
 
@@ -98,7 +109,7 @@ namespace ITMSales.API.Data
 
                     foreach (CountryResponse countryResponse in countries)
                     {
-                        Country country = await _context.Countries!.FirstOrDefaultAsync(c => c.Name == countryResponse.Name!)!;
+                        Country? country = await _context.Countries!.FirstOrDefaultAsync(c => c.Name == countryResponse.Name!)!;
 
                         if (country == null)
                         {
@@ -288,7 +299,15 @@ namespace ITMSales.API.Data
 
             foreach (string? image in images)
             {
-                var filePath = $"{Environment.CurrentDirectory}/Images/products/{image}";
+                string filePath;
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    filePath = $"{Environment.CurrentDirectory}\\Images\\products\\{image}";
+                }
+                else
+                {
+                    filePath = $"{Environment.CurrentDirectory}/Images/products/{image}";
+                }
 
                 var fileBytes = File.ReadAllBytes(filePath);
 
